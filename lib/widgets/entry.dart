@@ -15,9 +15,11 @@ class WastagramEntry extends StatefulWidget {
 
 class _WastagramEntryState extends State<WastagramEntry> {
   Fields fields;
-  File image;
+  PickedFile image;
   LocationData locationData;
   String url;
+  File _image;
+  final picker = ImagePicker();
 
   final formKey = GlobalKey<FormState>();
   final numberController = TextEditingController();
@@ -44,7 +46,7 @@ class _WastagramEntryState extends State<WastagramEntry> {
             key: formKey,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Image.file(image),
+              Image.file(_image),
               numberField(),
               SizedBox(height: 10),
               Row(
@@ -68,7 +70,7 @@ class _WastagramEntryState extends State<WastagramEntry> {
         decoration: InputDecoration(
             labelText: 'Total Items', border: OutlineInputBorder()),
         onSaved: (value) {
-          Firestore.instance.collection('list').add({
+          FirebaseFirestore.instance.collection('list').add({
             'Total': int.parse(value),
             'Date': DateTime.now(),
             'Picture': url,
@@ -107,11 +109,12 @@ class _WastagramEntryState extends State<WastagramEntry> {
   }
 
   Future getImage() async {
-    image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    image = await picker.getImage(source: ImageSource.gallery);
+    _image = File(image.path);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
         .child(Path.basename(DateTime.now().toString()));
-    StorageUploadTask uploadTask = storageReference.putFile(image);
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     url = await storageReference.getDownloadURL();
     setState(() {});

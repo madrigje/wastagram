@@ -20,7 +20,7 @@ class _ListScreenState extends State<ListScreen> {
         child: Container(
             child: Center(
                 child: StreamBuilder(
-                    stream: Firestore.instance.collection('list').snapshots(),
+                    stream: FirebaseFirestore.instance.collection('list').snapshots(),
                     builder: (content, snapshot) {
                       if (snapshot.hasData &&
                           snapshot.data.documents != null &&
@@ -109,7 +109,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
               //https://stackoverflow.com/questions/56627888/how-to-print-firestore-timestamp-as-formatted-date-and-time-in-flutter
               DateFormat.yMMMd()
                   .add_jm()
-                  .format(DateTime.parse(document['Date'].toDate().toString())),
+                  .format(DateTime.parse(document.get(['Date']).toDate().toString())),
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -119,7 +119,7 @@ Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
             ),
             padding: const EdgeInsets.all(10.0),
             child: Text(
-              document['Total'].toString(),
+              document.get(['Total']).toString(),
               style: Theme.of(context).textTheme.headline4,
             ),
           ),

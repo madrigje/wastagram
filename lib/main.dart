@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:wastagram/screens/detail_screen.dart';
 import 'package:wastagram/screens/list_screen.dart';
 import 'package:wastagram/screens/new_entry_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,7 @@ void main() {
 } 
 
 class MyApp extends StatelessWidget {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   const MyApp({Key key}) : super(key: key);
   
   static final routes = {
